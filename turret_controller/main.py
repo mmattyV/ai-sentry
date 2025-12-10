@@ -173,6 +173,10 @@ class LaserTurret:
         # Determine laser state
         self.laser_on = self._should_fire(target_state)
 
+        # Debug: print when laser state changes
+        if self.laser_on:
+            print(f"FIRING! is_locked={target_state.is_locked}, target={target_state.current_target is not None}")
+
         # Send commands to ESP32 and request next frame
         self.serial.send_command(
             pan=control_output.pan_angle,
