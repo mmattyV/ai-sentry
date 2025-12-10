@@ -199,22 +199,12 @@ class LaserTurret:
         return self.visualizer.show(display)
 
     def _should_fire(self, target_state: TargetState) -> bool:
-        """Determine if laser should fire based on lock state and dwell time."""
+        """Determine if laser should fire - fires when locked on target."""
         if not self.auto_fire:
             return False
 
-        if not target_state.is_locked or target_state.current_target is None:
-            # Not locked - reset dwell timer
-            self.lock_start_time = None
-            return False
-
-        # Check dwell time
-        current_time = time.time()
-        if self.lock_start_time is None:
-            self.lock_start_time = current_time
-
-        time_locked = current_time - self.lock_start_time
-        return time_locked >= self.dwell_time
+        # Fire immediately when locked (reticle is close to target center)
+        return target_state.is_locked and target_state.current_target is not None
 
     def _update_fps(self):
         """Update FPS calculation."""
@@ -360,8 +350,8 @@ def main():
     parser.add_argument(
         "--threshold", "-t",
         type=float,
-        default=20.0,
-        help="Lock-on threshold in pixels (default: 20.0)"
+        default=30.0,
+        help="Lock-on threshold in pixels (default: 30.0, higher = easier to lock)"
     )
 
     parser.add_argument(
