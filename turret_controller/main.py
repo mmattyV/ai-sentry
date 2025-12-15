@@ -44,8 +44,7 @@ class LaserTurret:
         cycle_interval: float = 3.0,
         lock_threshold: float = 20.0,
         kp: float = 0.3,
-        auto_fire: bool = True,
-        dwell_time: float = 0.5
+        auto_fire: bool = True
     ):
         """
         Initialize the laser turret system.
@@ -58,11 +57,8 @@ class LaserTurret:
             lock_threshold: Pixel error for lock-on.
             kp: Proportional gain for servo control.
             auto_fire: Automatically fire laser when locked.
-            dwell_time: Seconds to stay locked before firing.
         """
         self.auto_fire = auto_fire
-        self.dwell_time = dwell_time
-        self.lock_start_time: Optional[float] = None
 
         # Frame dimensions (will be updated from actual frames)
         self.frame_width = 320
@@ -372,13 +368,6 @@ def main():
     )
 
     parser.add_argument(
-        "--dwell",
-        type=float,
-        default=0.5,
-        help="Dwell time before firing in seconds (default: 0.5)"
-    )
-
-    parser.add_argument(
         "--webcam",
         action="store_true",
         help="Use webcam instead of ESP32 camera"
@@ -414,8 +403,7 @@ def main():
         cycle_interval=args.cycle,
         lock_threshold=args.threshold,
         kp=args.kp,
-        auto_fire=not args.no_auto_fire,
-        dwell_time=args.dwell
+        auto_fire=not args.no_auto_fire
     )
 
     turret.run()
